@@ -1,2 +1,4 @@
 pykakasi==2.*
 syllables==1.*
+uroman==1.*
+fun-things==0.48.*

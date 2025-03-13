@@ -11,6 +11,7 @@ A Python library for manipulating and splicing phrases with precise timing contr
   - Even distribution (`splice_evenly`)
   - Syllable-based distribution (`splice_by_syllables`)
 - **Language Support**: Works with multiple languages including English and Japanese
+- **Text Romanization**: Convert text from various languages to romanized form
 
 ## Installation
 
@@ -23,6 +24,8 @@ pip install git+https://github.com/Talisik/phrase-splicer.git
 - Python 3.10+
 - pykakasi 2.x (for Japanese language support)
 - syllables 1.x (for syllable counting)
+- uroman 1.x (for romanization of various languages)
+- fun-things 0.48.x
 
 ## Usage
 
@@ -71,6 +74,20 @@ pauses = list(get_pauses(words))
 # Returns a TimestampRange for the pause between "Hello" and "world"
 ```
 
+### Text Romanization
+
+```python
+from phrase_splicer import romanize
+
+# Romanize Japanese text
+japanese_text = "こんにちは世界"
+romanized_jp = romanize(japanese_text)
+
+# Romanize text in other languages
+other_text = "Привет мир"  # Russian
+romanized_other = romanize(other_text)
+```
+
 ## API Reference
 
 ### Core Classes
@@ -84,6 +101,7 @@ pauses = list(get_pauses(words))
 - `splice_evenly`: Distributes new words evenly across the timing of reference words
 - `splice_by_syllables`: Distributes new words based on syllable count
 - `get_pauses`: Identifies pauses between words
+- `romanize`: Converts text from various languages to romanized form
 
 ## Development
 
@@ -91,9 +109,32 @@ pauses = list(get_pauses(words))
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/phrase-splicer.git
+git clone https://github.com/Talisik/phrase-splicer.git
 cd phrase-splicer
 
 # Install development dependencies
 pip install -r requirements.txt
 ```
+
+### Project Structure
+
+```
+phrase-splicer/
+├── src/
+│   └── phrase_splicer/
+│       ├── models/
+│       │   ├── timestamp.py
+│       │   ├── timestamp_range.py
+│       │   └── word.py
+│       ├── __init__.py
+│       ├── constants.py
+│       └── utils.py
+├── pyproject.toml
+├── setup.cfg
+├── setup.py
+└── requirements.txt
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

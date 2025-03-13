@@ -1,13 +1,41 @@
 import re
 from typing import Dict, Iterable, List, Optional
+from phrase_splicer.constants import kks, ur
 
 from .models.timestamp_range import TimestampRange
 from .models.word import Word
 
 
+def romanize(text: str) -> str:
+    """
+    Romanizes the input text based on its language.
+
+    This function first attempts to romanize Japanese text using pykakasi. If the input
+    text is not modified after this conversion, it is assumed not to be Japanese, and
+    the function then attempts to romanize the text using Uroman for other languages.
+
+    Args:
+        text: The input text string to be romanized.
+
+    Returns:
+        The romanized version of the input text. If the text is Japanese, it returns
+        the original text.
+    """
+
+    new_text = " ".join(value for obj in kks().convert(text) for value in obj.values())
+
+    if text != new_text:
+        # Text is Japanese.
+        return text
+
+    # Text is not Japanese, try other languages to romanize.
+
+    return ur().romanize_string(text)  # type: ignore
+
+
 def split_words(text: str):
     return re.split(
-        r"\S+",
+        r"[\w-']+",
         text,
     )
 
