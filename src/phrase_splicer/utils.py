@@ -1,7 +1,15 @@
+import re
 from typing import Dict, Iterable, List, Optional
 
 from .models.timestamp_range import TimestampRange
 from .models.word import Word
+
+
+def split_words(text: str):
+    return re.split(
+        r"\S+",
+        text,
+    )
 
 
 def get_pauses(words: Iterable[Word]):
@@ -32,16 +40,88 @@ def get_pauses(words: Iterable[Word]):
         prev_word = word
 
 
+def splice_evenly(
+    reference_words: List[Word],
+    new_words: List[str],
+):
+    """
+    Splices a list of new words into reference words evenly based on their position.
+
+    This function maps each new word to a reference word, distributing them as evenly as possible
+    across the reference words, and generates Word objects with timestamps matching those of
+    the reference words. It then distributes these words by syllables within the time range of
+    each reference word.
+
+    Args:
+        reference_words: A list of Word objects serving as reference for distribution.
+        new_words: A list of strings representing the new words to be spliced into the reference words.
+
+    Yields:
+        Word: A generator that yields Word objects distributed by syllables within the time
+        ranges of the reference words.
+    """
+
+    word_map: Dict[Word, List[Word]] = {
+        reference_word: [] for reference_word in reference_words
+    }
+
+    total_length = len(new_words)
+
+    for i, word in enumerate(new_words):
+        index = int(i / total_length * len(reference_words))
+        reference_word = reference_words[index]
+
+        word_map[reference_word].append(
+            Word(
+                text=word,
+                timestamp=TimestampRange(
+                    start=reference_word.timestamp.start,
+                    end=reference_word.timestamp.end,
+                ),
+            )
+        )
+
+    for reference_word, words in word_map.items():
+        yield from Word.distribute_words_by_syllables(
+            words,
+            start=reference_word.timestamp.start,
+            end=reference_word.timestamp.end,
+        )
+
+
 def splice_by_syllables(
     reference_words: List[Word],
-    new_words: List[Word],
+    new_words: List[str],
 ):
-    pauses = [*get_pauses(reference_words)]
+    """
+    Splices a list of new words into reference words by syllables.
 
-    normalized = Word.distribute_by_syllables(
-        words=[word.text for word in new_words],
-        start=reference_words[0].timestamp.start,
-        end=reference_words[-1].timestamp.end,
+    This function maps each new word to a reference word, distributing them by syllables,
+    and generates Word objects with timestamps matching those of the reference words.
+    It then distributes these words by syllables within the time range of each reference word.
+
+    Args:
+        reference_words: A list of Word objects serving as reference for distribution.
+        new_words: A list of strings representing the new words to be spliced into the reference words.
+
+    Yields:
+        Word: A generator that yields Word objects distributed by syllables within the time
+        ranges of the reference words.
+    """
+    normalized = [
+        *Word.distribute_by_syllables(
+            words=[word for word in new_words],
+            start=reference_words[0].timestamp.start,
+            end=reference_words[-1].timestamp.end,
+        )
+    ]
+
+    print(
+        *[
+            f"{v.text} : {v.timestamp.start.seconds} - {v.timestamp.end.seconds}"
+            for v in normalized
+        ],
+        sep="\n",
     )
 
     word_map: Dict[Word, List[Word]] = {
@@ -54,9 +134,15 @@ def splice_by_syllables(
             key=lambda map: map[0].timestamp.get_intersection_percent(
                 word.timestamp,
             )
-            / (sum(word.syllables_count for word in map[1]) + 1),
+            * map[0].syllables_count
+            / (sum(word.syllables_count for word in map[1]) * 2 + 1),
         )
 
         word_map[nearest_reference_word].append(word)
 
-    return word_map
+    for reference_word, words in word_map.items():
+        yield from Word.distribute_words_by_syllables(
+            words,
+            start=reference_word.timestamp.start,
+            end=reference_word.timestamp.end,
+        )

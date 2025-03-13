@@ -111,3 +111,22 @@ class Word:
             start=start.seconds,
             total_duration=end.seconds - start.seconds,
         )
+
+    @classmethod
+    def distribute_words_by_syllables(
+        cls,
+        words: List["Word"],
+        start: Timestamp,
+        end: Timestamp,
+    ):
+        return cls.distribute(
+            items=[
+                Item(
+                    text=word.text,
+                    weight=word.syllables_count,
+                )
+                for word in words
+            ],
+            start=start.seconds,
+            total_duration=end.seconds - start.seconds,
+        )

@@ -1,0 +1,2 @@
+import pykakasi
+import syllables
