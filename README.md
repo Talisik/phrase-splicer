@@ -20,7 +20,7 @@ pip install git+https://github.com/Talisik/phrase-splicer.git
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.10+
 - pykakasi 2.x (for Japanese language support)
 - syllables 1.x (for syllable counting)
 
