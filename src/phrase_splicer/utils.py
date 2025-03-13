@@ -1,7 +1,6 @@
 from typing import Dict, Iterable, List, Optional
 
-from phrase_slicer.models.timestamp_range import TimestampRange
-
+from .models.timestamp_range import TimestampRange
 from .models.word import Word
 
 
