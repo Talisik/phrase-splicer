@@ -144,14 +144,6 @@ def splice_by_syllables(
         )
     ]
 
-    print(
-        *[
-            f"{v.text} : {v.timestamp.start.seconds} - {v.timestamp.end.seconds}"
-            for v in normalized
-        ],
-        sep="\n",
-    )
-
     word_map: Dict[Word, List[Word]] = {
         reference_word: [] for reference_word in reference_words
     }
