@@ -10,6 +10,14 @@ class Timestamp:
         return self.milliseconds / 1000
 
     @property
+    def minutes(self):
+        return self.seconds / 60
+
+    @property
+    def hours(self):
+        return self.minutes / 60
+
+    @property
     def text(self):
         """
         Returns the timestamp formatted as a string in the format 'HH:MM:SS.mmm',
