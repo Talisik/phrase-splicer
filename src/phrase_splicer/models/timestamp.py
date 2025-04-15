@@ -41,4 +41,9 @@ class Timestamp:
         hours, minutes, sec_millis = text.split(":")
         sec, millis = sec_millis.split(".")
 
-        return int(hours) * 3600 + int(minutes) * 60 + int(sec) + int(millis) / 1000
+        return Timestamp(
+            milliseconds=int(hours) * 3600 * 1000
+            + int(minutes) * 60 * 1000
+            + int(sec) * 1000
+            + int(millis)
+        )
