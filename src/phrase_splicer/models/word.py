@@ -3,9 +3,9 @@ from typing import Callable, Iterable, List, TypeVar
 
 import syllables
 
-from .timestamp_range import TimestampRange
 from .item import Item
 from .timestamp import Timestamp
+from .timestamp_range import TimestampRange
 
 T = TypeVar("T")
 
@@ -54,14 +54,14 @@ class Word:
     def distribute(
         cls,
         items: List[Item],
-        start: float,
-        total_duration: float,
+        start: int,
+        total_duration: int,
     ):
         total_weight = sum(item.weight for item in items)
         a = start
 
         for item in items:
-            duration = (item.weight / total_weight) * total_duration
+            duration = round((item.weight / total_weight) * total_duration)
             b = a + duration
 
             yield cls(
@@ -89,8 +89,8 @@ class Word:
                 )
                 for word in words
             ],
-            start=start.seconds,
-            total_duration=end.seconds - start.seconds,
+            start=start.milliseconds,
+            total_duration=end.milliseconds - start.milliseconds,
         )
 
     @classmethod
@@ -108,8 +108,8 @@ class Word:
                 )
                 for word in words
             ],
-            start=start.seconds,
-            total_duration=end.seconds - start.seconds,
+            start=start.milliseconds,
+            total_duration=end.milliseconds - start.milliseconds,
         )
 
     @classmethod
@@ -127,6 +127,6 @@ class Word:
                 )
                 for word in words
             ],
-            start=start.seconds,
-            total_duration=end.seconds - start.seconds,
+            start=start.milliseconds,
+            total_duration=end.milliseconds - start.milliseconds,
         )

@@ -4,14 +4,14 @@ A Python library for manipulating and splicing phrases with precise timing contr
 
 ## Features
 
-- **Timestamp Management**: Precise control over word and phrase timing
-- **Pause Detection**: Identify pauses between words in a sequence
-- **Flexible Splicing**: Splice new words into existing phrases with timing preservation
-- **Multiple Splicing Strategies**:
-  - Even distribution (`splice_evenly`)
-  - Syllable-based distribution (`splice_by_syllables`)
-- **Language Support**: Works with multiple languages including English and Japanese
-- **Text Romanization**: Convert text from various languages to romanized form
+-   **Timestamp Management**: Precise control over word and phrase timing
+-   **Pause Detection**: Identify pauses between words in a sequence
+-   **Flexible Splicing**: Splice new words into existing phrases with timing preservation
+-   **Multiple Splicing Strategies**:
+    -   Even distribution (`splice_evenly`)
+    -   Syllable-based distribution (`splice_by_syllables`)
+-   **Language Support**: Works with multiple languages including English and Japanese
+-   **Text Romanization**: Convert text from various languages to romanized form
 
 ## Installation
 
@@ -21,11 +21,11 @@ pip install git+https://github.com/Talisik/phrase-splicer.git
 
 ## Requirements
 
-- Python 3.10+
-- pykakasi 2.x (for Japanese language support)
-- syllables 1.x (for syllable counting)
-- uroman 1.x (for romanization of various languages)
-- fun-things 0.48.x
+-   Python 3.10+
+-   pykakasi 2.x (for Japanese language support)
+-   syllables 1.x (for syllable counting)
+-   uroman 1.x (for romanization of various languages)
+-   fun-things 0.48.x
 
 ## Usage
 
@@ -37,12 +37,12 @@ from phrase_splicer import Word, Timestamp, TimestampRange, splice_evenly, splic
 # Create words with timestamps
 words = [
     Word(text="Hello", timestamp=TimestampRange(
-        start=Timestamp(seconds=0.0),
-        end=Timestamp(seconds=0.5)
+        start=Timestamp(milliseconds=0),
+        end=Timestamp(milliseconds=500)
     )),
     Word(text="world", timestamp=TimestampRange(
-        start=Timestamp(seconds=0.6),
-        end=Timestamp(seconds=1.0)
+        start=Timestamp(milliseconds=600),
+        end=Timestamp(milliseconds=1000)
     ))
 ]
 
@@ -61,12 +61,12 @@ from phrase_splicer import Word, Timestamp, TimestampRange, get_pauses
 
 words = [
     Word(text="Hello", timestamp=TimestampRange(
-        start=Timestamp(seconds=0.0),
-        end=Timestamp(seconds=0.5)
+        start=Timestamp(milliseconds=0),
+        end=Timestamp(milliseconds=500)
     )),
     Word(text="world", timestamp=TimestampRange(
-        start=Timestamp(seconds=0.6),
-        end=Timestamp(seconds=1.0)
+        start=Timestamp(milliseconds=600),
+        end=Timestamp(milliseconds=1000)
     ))
 ]
 
@@ -92,16 +92,16 @@ romanized_other = romanize(other_text)
 
 ### Core Classes
 
-- `Word`: Represents a word with text and timestamp information
-- `TimestampRange`: Represents a time range with start and end timestamps
-- `Timestamp`: Represents a single point in time
+-   `Word`: Represents a word with text and timestamp information
+-   `TimestampRange`: Represents a time range with start and end timestamps
+-   `Timestamp`: Represents a single point in time
 
 ### Main Functions
 
-- `splice_evenly`: Distributes new words evenly across the timing of reference words
-- `splice_by_syllables`: Distributes new words based on syllable count
-- `get_pauses`: Identifies pauses between words
-- `romanize`: Converts text from various languages to romanized form
+-   `splice_evenly`: Distributes new words evenly across the timing of reference words
+-   `splice_by_syllables`: Distributes new words based on syllable count
+-   `get_pauses`: Identifies pauses between words
+-   `romanize`: Converts text from various languages to romanized form
 
 ## Development
 

@@ -1,10 +1,13 @@
 from dataclasses import dataclass
-import math
 
 
 @dataclass(frozen=True)
 class Timestamp:
-    seconds: float
+    milliseconds: int
+
+    @property
+    def seconds(self):
+        return self.milliseconds / 1000
 
     @property
     def text(self):
@@ -16,7 +19,7 @@ class Timestamp:
         hr = int(self.seconds // 3600)
         mn = int((self.seconds % 3600) // 60)
         sc = int(self.seconds % 60)
-        ms = int((self.seconds - math.floor(self.seconds)) * 1000)
+        ms = self.milliseconds % 1000
 
         return f"{hr:02}:{mn:02}:{sc:02}.{ms:03}"
 
@@ -24,7 +27,7 @@ class Timestamp:
     def from_text(cls, text: str):
         """
         Creates a Timestamp from a string in the format 'HH:MM:SS.mmm'. The string
-        is parsed and converted to a float representing the timestamp in seconds.
+        is parsed and converted to a float representing the timestamp in milliseconds.
         """
 
         hours, minutes, sec_millis = text.split(":")

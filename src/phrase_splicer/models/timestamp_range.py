@@ -29,15 +29,15 @@ class TimestampRange:
         ma-la-king = [3, 4]
         0s Pause
 
-        The duration of the timestamp range in seconds, calculated as the difference
+        The duration of the timestamp range in milliseconds, calculated as the difference
         between the end and start timestamps.
         """
 
-        return self.end.seconds - self.start.seconds
+        return self.end.milliseconds - self.start.milliseconds
 
     def get_intersection_duration(self, other: "TimestampRange"):
         """
-        Calculates the intersection of the two timestamp ranges in seconds.
+        Calculates the intersection of the two timestamp ranges in milliseconds.
 
         The intersection is calculated by finding the overlap of the two timestamp ranges. The overlap is
         calculated by finding the latest start time and the earliest end time, and then subtracting the start
@@ -47,10 +47,10 @@ class TimestampRange:
             other (TimestampRange): The other timestamp range to calculate the intersection with.
 
         Returns:
-            float: The intersection of the two timestamp ranges in seconds.
+            float: The intersection of the two timestamp ranges in milliseconds.
         """
-        latest_start = max(self.start.seconds, other.start.seconds)
-        earliest_end = min(self.end.seconds, other.end.seconds)
+        latest_start = max(self.start.milliseconds, other.start.milliseconds)
+        earliest_end = min(self.end.milliseconds, other.end.milliseconds)
 
         return max(0, earliest_end - latest_start)
 
