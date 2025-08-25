@@ -20,6 +20,16 @@ class Word:
         return syllables.estimate(self.text)
 
     @classmethod
+    def new(cls, text: str, min_ms: int, max_ms: int):
+        return cls(
+            text=text,
+            timestamp=TimestampRange(
+                start=Timestamp(min_ms),
+                end=Timestamp(max_ms),
+            ),
+        )
+
+    @classmethod
     def make(
         cls,
         items: Iterable[T],

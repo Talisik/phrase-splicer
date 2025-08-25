@@ -5,35 +5,60 @@ from .timestamp import Timestamp
 
 @dataclass(frozen=True)
 class TimestampRange:
+    """
+    Example:
+
+    The = [0, 1]
+
+    2s Pause
+
+    big = [3, 4]
+
+    0s Pause
+
+    brown = [4, 6]
+
+    1s Pause
+
+    fox = [7, 8]
+
+    ```
+    The                      big brown    fox = 4 words
+    Ang ma-la-king ka-yu-mang-gi so-ro he-llo = 5 words
+    ###......................###.#####....###
+    ```
+
+    Ang = [0, 1]
+
+    2s Pause
+
+    ma-la-king = [3, 4]
+
+    0s Pause
+    """
+
     start: Timestamp
     end: Timestamp
 
     @property
     def duration(self):
         """
-
-        The = [0, 1]
-        2s Pause
-        big = [3, 4]
-        0s Pause
-        brown = [4, 6]
-        1s Pause
-        fox = [7, 8]
-
-        The                      big brown    fox = 4 words
-        Ang ma-la-king ka-yu-mang-gi so-ro he-llo = 5 words
-        ###......................###.#####....###
-
-        Ang = [0, 1]
-        2s Pause
-        ma-la-king = [3, 4]
-        0s Pause
-
         The duration of the timestamp range in milliseconds, calculated as the difference
         between the end and start timestamps.
         """
 
         return self.end.milliseconds - self.start.milliseconds
+
+    def get_distance(self, other: "TimestampRange"):
+        """
+        Returns the distance between two timestamp ranges in milliseconds.
+
+        If the timestamp ranges overlap, the distance is 0.
+        """
+        if self.start.milliseconds < other.start.milliseconds:
+            return max(0, other.start.milliseconds - self.end.milliseconds)
+
+        return max(0, self.start.milliseconds - other.end.milliseconds)
 
     def get_intersection_duration(self, other: "TimestampRange"):
         """

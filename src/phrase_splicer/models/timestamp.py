@@ -47,3 +47,10 @@ class Timestamp:
             + int(sec) * 1000
             + int(millis)
         )
+
+    def get_magnitude(self, other: "Timestamp"):
+        """
+        Returns the magnitude of the difference between two timestamps in milliseconds.
+        """
+
+        return abs(other.milliseconds - self.milliseconds)

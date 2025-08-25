@@ -1,7 +1,7 @@
 import re
-from typing import Dict, Iterable, List, Optional
-from phrase_splicer.constants import kks, ur
+from typing import Dict, Iterable, List, Optional, Union
 
+from .constants import kks, ur
 from .models.timestamp_range import TimestampRange
 from .models.word import Word
 
@@ -33,11 +33,11 @@ def romanize(text: str) -> str:
     return ur().romanize_string(text)  # type: ignore
 
 
-def split_words(text: str):
-    return re.split(
-        r"[\w-']+",
-        text,
-    )
+def split_words(
+    text: str,
+    rx: Union[str, re.Pattern[str]] = r"[\w-']+",
+):
+    return re.split(rx, text)
 
 
 def get_pauses(words: Iterable[Word]):
