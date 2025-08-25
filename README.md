@@ -10,6 +10,10 @@ A Python library for manipulating and splicing phrases with precise timing contr
 -   **Multiple Splicing Strategies**:
     -   Even distribution (`splice_evenly`)
     -   Syllable-based distribution (`splice_by_syllables`)
+-   **Advanced Word Comparison**: Compare word sequences and identify differences with the `Diff` class
+-   **Intelligent Timestamp Calibration**: Automatically calibrate timestamps for new words based on neighboring words and syllable counts
+-   **Enhanced Word Distribution**: Multiple distribution methods including character-based and syllable-based distribution
+-   **Syllable-Aware Processing**: Automatic syllable counting for more accurate timing distribution
 -   **Language Support**: Works with multiple languages including English and Japanese
 -   **Text Romanization**: Convert text from various languages to romanized form
 
@@ -32,7 +36,7 @@ pip install git+https://github.com/Talisik/phrase-splicer.git
 ### Basic Example
 
 ```python
-from phrase_splicer import Word, Timestamp, TimestampRange, splice_evenly, splice_by_syllables
+from phrase_splicer import Word, Timestamp, TimestampRange, splice_evenly, splice_by_syllables, Diff
 
 # Create words with timestamps
 words = [
@@ -88,13 +92,85 @@ other_text = "Привет мир"  # Russian
 romanized_other = romanize(other_text)
 ```
 
+### Word Comparison and Diff
+
+```python
+from phrase_splicer import Word, Timestamp, TimestampRange, Diff
+
+# Original words with timestamps
+original_words = [
+    Word.new("Hello", 0, 500),
+    Word.new("world", 600, 1000),
+]
+
+# New words (timestamps will be calibrated automatically)
+new_words = [
+    Word.new("Hello", 0, 0),
+    Word.new("beautiful", 0, 0),  # New word to be inserted
+    Word.new("world", 0, 0),
+]
+
+# Compare the word sequences
+diffs = Diff.compare(original_words, new_words)
+
+# Print the differences
+for diff in diffs:
+    print(diff)
+
+# Calibrate timestamps for uncalibrated words
+calibrated_diffs = Diff.calibrate(diffs)
+
+# Extract the final word sequence with proper timestamps
+final_words = [diff.word for diff in calibrated_diffs if diff.type != "removed"]
+```
+
+### Enhanced Word Distribution
+
+```python
+from phrase_splicer import Word, Timestamp
+
+# Distribute words by syllables
+words = ["Hello", "beautiful", "world"]
+distributed_words = list(Word.distribute_by_syllables(
+    words,
+    start=Timestamp(0),
+    end=Timestamp(2000)
+))
+
+# Distribute words by character count
+char_distributed = list(Word.distribute_by_characters(
+    words,
+    start=Timestamp(0),
+    end=Timestamp(2000)
+))
+
+# Each word gets timing proportional to its syllable count or character count
+for word in distributed_words:
+    print(f"{word.text}: {word.timestamp.start.milliseconds}-{word.timestamp.end.milliseconds}ms")
+```
+
 ## API Reference
 
 ### Core Classes
 
 -   `Word`: Represents a word with text and timestamp information
+    -   `syllables_count`: Property that returns the estimated syllable count
+    -   `new(text, start_ms, end_ms)`: Class method to create a word with millisecond timestamps
+    -   `distribute_by_syllables(words, start, end)`: Distribute words by syllable count
+    -   `distribute_by_characters(words, start, end)`: Distribute words by character count
+    -   `distribute_words_by_syllables(words, start, end)`: Distribute existing Word objects by syllables
 -   `TimestampRange`: Represents a time range with start and end timestamps
+    -   `duration`: Property that returns the duration in milliseconds
+    -   `get_distance(other)`: Returns distance between two timestamp ranges
+    -   `get_intersection_duration(other)`: Returns overlap duration with another range
+    -   `get_intersection_percent(other)`: Returns overlap as percentage of total duration
 -   `Timestamp`: Represents a single point in time
+-   `Diff`: Represents a difference between two word sequences
+    -   `compare(a, b)`: Class method to compare two word sequences
+    -   `calibrate(diffs)`: Class method to calibrate timestamps for uncalibrated words
+    -   `get_uncalibrated_phrases(diffs)`: Get sequences of uncalibrated words
+    -   `borrow_space(diffs, space, syllables, left_idx, right_idx)`: Borrow timing from neighboring words
+-   `Item`: Simple data class with text and weight properties
 
 ### Main Functions
 
@@ -123,12 +199,16 @@ phrase-splicer/
 ├── src/
 │   └── phrase_splicer/
 │       ├── models/
+│       │   ├── diff.py
+│       │   ├── item.py
 │       │   ├── timestamp.py
 │       │   ├── timestamp_range.py
 │       │   └── word.py
 │       ├── __init__.py
 │       ├── constants.py
 │       └── utils.py
+├── tests/
+│   └── test_diff.py
 ├── pyproject.toml
 ├── setup.cfg
 ├── setup.py
